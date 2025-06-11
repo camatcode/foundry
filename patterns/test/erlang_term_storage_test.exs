@@ -22,6 +22,8 @@ defmodule ErlangTermStorageTest do
     [^user_2] = :ets.lookup(uniq_table, 2)
     [] = :ets.lookup(uniq_table, 100)
 
+    # remember, :ets.fun2ms/1 in the shell
+
     [{1, "Alex", "Koutmos"}, {3, "Joe", "Smith"}, {2, "Hugo", "Barauna"}] =
       uniq_table
       |> :ets.select([
@@ -31,7 +33,6 @@ defmodule ErlangTermStorageTest do
           [{{:"$1", :"$2", :"$3"}}]
         }
       ])
-
 
     3 =
       uniq_table
@@ -44,6 +45,75 @@ defmodule ErlangTermStorageTest do
       ])
 
     :ets.delete(uniq_table)
-    # page 49
+  end
+
+  test ":bag ETS" do
+    # :public - any process can read/write
+    # :private - only the owning process can read/write
+    metrics_table = :ets.new(:my_metrics_table, [:bag, :public])
+
+    task =
+      Task.async(fn ->
+        :ets.insert(
+          metrics_table,
+          {:auth_attempt, %{user: "Alex", ts: NaiveDateTime.utc_now()}}
+        )
+
+        :ets.insert(
+          metrics_table,
+          {:auth_attempt, %{user: "Hugo", ts: NaiveDateTime.utc_now()}}
+        )
+
+        :ets.insert(
+          metrics_table,
+          {:new_user_created, %{user: "Jane", ts: NaiveDateTime.utc_now()}}
+        )
+      end)
+
+    Task.await(task)
+
+    [
+      new_user_created: %{user: "Jane", ts: _time_1},
+      auth_attempt: %{user: "Alex", ts: _time_2},
+      auth_attempt: %{user: "Hugo", ts: _time_3}
+    ] = :ets.tab2list(metrics_table)
+
+    :ets.delete(metrics_table)
+  end
+
+  test "DETS - disk based ets" do
+    tmp = System.tmp_dir!()
+    path = Path.join(tmp, "dets_table.dets")
+
+    on_exit(fn ->
+      File.rm(path)
+    end)
+
+    {:ok, dets_table} = :dets.open_file(~c"#{path}", type: :bag)
+
+    metrics_table = :ets.new(:my_metrics_table, [:bag, :public])
+
+    task =
+      Task.async(fn ->
+        :ets.insert(
+          metrics_table,
+          {:auth_attempt, %{user: "Alex", ts: NaiveDateTime.utc_now()}}
+        )
+
+        :ets.insert(
+          metrics_table,
+          {:auth_attempt, %{user: "Hugo", ts: NaiveDateTime.utc_now()}}
+        )
+
+        :ets.insert(
+          metrics_table,
+          {:new_user_created, %{user: "Jane", ts: NaiveDateTime.utc_now()}}
+        )
+      end)
+
+    Task.await(task)
+
+    :ets.to_dets(metrics_table, dets_table)
+    :dets.sync(dets_table)
   end
 end
