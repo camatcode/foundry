@@ -41,7 +41,23 @@ defmodule StreamsTest do
     assert Enum.count(results) == limit
   end
 
+  NimbleCSV.define(PopulationParser, separator: ",")
+
   test "parse large CSV" do
+    path = Path.join("test/support/", "population.csv")
+
+    pop_at_year =
+      path
+      |> File.stream!()
+      |> PopulationParser.parse_stream()
+      |> Stream.filter(fn parts -> hd(parts) == "United States" end)
+      |> Stream.map(fn [_, _, year, population] ->
+        {year, population}
+      end)
+      |> Enum.to_list()
+      |> IO.inspect()
+
+    refute Enum.empty?(pop_at_year)
   end
 
   defp do_work(item, search_term) do
