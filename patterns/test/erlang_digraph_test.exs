@@ -1,8 +1,6 @@
 defmodule ErlangDigraphTest do
   use ExUnit.Case
 
-  alias ErlangDigraph
-
   @moduletag :capture_log
 
   test "digraphs" do

@@ -1,8 +1,6 @@
 defmodule EnumDataSummarizeTest do
   use ExUnit.Case
 
-  alias EnumDataSummarize
-
   @moduletag :capture_log
 
   setup do
@@ -31,8 +29,8 @@ defmodule EnumDataSummarizeTest do
 
   test "reduce_while", %{inv: inventory} do
     {:error, :missing_year} =
-      inventory
-      |> Enum.reduce_while(
+      Enum.reduce_while(
+        inventory,
         MapSet.new(),
         fn
           %{year: year}, acc -> {:cont, MapSet.put(acc, year)}

@@ -1,5 +1,6 @@
 defmodule PatternsTest do
   use ExUnit.Case
+
   doctest Patterns
 
   test "greets the world" do

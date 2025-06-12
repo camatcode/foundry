@@ -1,8 +1,6 @@
 defmodule EnumDataCleanseTest do
   use ExUnit.Case
 
-  alias EnumDataCleanse
-
   @moduletag :capture_log
 
   test "cleanse" do
@@ -13,17 +11,11 @@ defmodule EnumDataCleanseTest do
       %{name: "Dodge Ram", type: :truck}
     ]
 
-    [%{name: "Ferrari Italia"}, %{name: "Chevy Camaro"}] =
-      data
-      |> Enum.filter(&match?(:sports_car, &1[:type]))
+    [%{name: "Ferrari Italia"}, %{name: "Chevy Camaro"}] = Enum.filter(data, &match?(:sports_car, &1[:type]))
 
-    [%{name: "Honda Passport"}, %{name: "Dodge Ram"}] =
-      data
-      |> Enum.reject(&match?(:sports_car, &1[:type]))
+    [%{name: "Honda Passport"}, %{name: "Dodge Ram"}] = Enum.reject(data, &match?(:sports_car, &1[:type]))
 
-    [%{name: "Honda Passport"}, %{name: "Dodge Ram"}] =
-      data
-      |> Enum.filter(&big?(&1))
+    [%{name: "Honda Passport"}, %{name: "Dodge Ram"}] = Enum.filter(data, &big?(&1))
   end
 
   defp big?(%{type: type}), do: type in [:truck, :crossover]

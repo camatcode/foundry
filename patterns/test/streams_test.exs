@@ -1,8 +1,6 @@
 defmodule StreamsTest do
   use ExUnit.Case
 
-  alias Streams
-
   @moduletag :capture_log
 
   test "stress_test" do
@@ -28,8 +26,8 @@ defmodule StreamsTest do
     starting_item = 31_324_400
 
     results =
-      Stream.resource(
-        fn -> starting_item end,
+      fn -> starting_item end
+      |> Stream.resource(
         fn item ->
           # returns {[data], next_item_to_explore}
           do_work(item, search_term)

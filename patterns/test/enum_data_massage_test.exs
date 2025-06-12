@@ -1,8 +1,6 @@
 defmodule EnumDataMassageTest do
   use ExUnit.Case
 
-  alias EnumDataMassage
-
   @moduletag :capture_log
 
   setup do
@@ -25,20 +23,12 @@ defmodule EnumDataMassageTest do
     # group_by
     %{
       "Chevy" => [%{year: 1967, model: "Camaro"}],
-      "Honda" => [
-        %{year: 1994, model: "Civic"},
-        %{year: 2000, model: "Accord"}
-      ],
+      "Honda" => [%{year: 1994, model: "Civic"}, %{year: 2000, model: "Accord"}],
       "Lamborghini" => [%{year: 2020, model: "Huracan"}],
       "Mazda" => [%{model: "RX-7"}],
       "Mitsubishi" => [%{year: 2004, model: "Evolution 8"}],
-      "Toyota" => [
-        %{model: "Supra"},
-        %{model: "MR2"}
-      ]
-    } =
-      inventory
-      |> Enum.group_by(& &1[:make])
+      "Toyota" => [%{model: "Supra"}, %{model: "MR2"}]
+    } = Enum.group_by(inventory, & &1[:make])
   end
 
   test "sort_by", %{inv: inventory} do
@@ -62,7 +52,6 @@ defmodule EnumDataMassageTest do
       end)
   end
 
-
   test "split_with", %{inv: inventory} do
     {[
        %{year: 1967, make: "Chevy", model: "Camaro"},
@@ -71,13 +60,8 @@ defmodule EnumDataMassageTest do
        %{year: 2000, make: "Honda", model: "Accord"},
        %{year: 2004, make: "Mitsubishi", model: "Evolution 8"}
      ],
-     [
-       %{make: "Toyota", model: "Supra"},
-       %{make: "Toyota", model: "MR2"},
-       %{make: "Mazda", model: "RX-7"}
-     ]} =
-      inventory
-      |> Enum.split_with(& &1[:year])
+     [%{make: "Toyota", model: "Supra"}, %{make: "Toyota", model: "MR2"}, %{make: "Mazda", model: "RX-7"}]} =
+      Enum.split_with(inventory, & &1[:year])
   end
 
   test "map", %{inv: inventory} do

@@ -1,8 +1,6 @@
 defmodule ErlangTermStorageTest do
   use ExUnit.Case
 
-  alias ErlangTermStorage
-
   @moduletag :capture_log
 
   test ":set ETS" do
@@ -25,24 +23,9 @@ defmodule ErlangTermStorageTest do
     # remember, :ets.fun2ms/1 in the shell
 
     [{1, "Alex", "Koutmos"}, {3, "Joe", "Smith"}, {2, "Hugo", "Barauna"}] =
-      uniq_table
-      |> :ets.select([
-        {
-          {:"$1", %{first: :"$2", last: :"$3", lang: :elixir}},
-          [],
-          [{{:"$1", :"$2", :"$3"}}]
-        }
-      ])
+      :ets.select(uniq_table, [{{:"$1", %{first: :"$2", last: :"$3", lang: :elixir}}, [], [{{:"$1", :"$2", :"$3"}}]}])
 
-    3 =
-      uniq_table
-      |> :ets.select_count([
-        {
-          {:"$1", %{lang: :"$2"}},
-          [{:==, :"$2", :elixir}],
-          [true]
-        }
-      ])
+    3 = :ets.select_count(uniq_table, [{{:"$1", %{lang: :"$2"}}, [{:==, :"$2", :elixir}], [true]}])
 
     :ets.delete(uniq_table)
   end

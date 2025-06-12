@@ -1,21 +1,19 @@
 defmodule ErlangSetsTest do
   use ExUnit.Case
 
-  alias ErlangSets
-
   @moduletag :capture_log
 
   test "sets" do
     assert %{} = :sets.new(version: 2)
 
-    assert {:set, 0, 16, 16, 8, 80, 48,
-            {[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []},
+    assert {:set, 0, 16, 16, 8, 80, 48, {[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []},
             {{[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []}}} =
              :sets.new()
 
     %{"jane@cool-app.com" => [], "john@cool-app.com" => []} =
       unique_emails =
-      :sets.new(version: 2)
+      [version: 2]
+      |> :sets.new()
       |> then(&:sets.add_element("john@cool-app.com", &1))
       |> then(&:sets.add_element("jane@cool-app.com", &1))
       |> then(&:sets.add_element("jane@cool-app.com", &1))

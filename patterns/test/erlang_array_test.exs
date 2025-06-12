@@ -1,8 +1,6 @@
 defmodule ErlangArrayTest do
   use ExUnit.Case
 
-  alias ErlangArray
-
   @moduletag :capture_log
 
   test "array" do

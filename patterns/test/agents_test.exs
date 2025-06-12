@@ -1,8 +1,6 @@
 defmodule AgentsTest do
   use ExUnit.Case
 
-  alias Agents
-
   @moduletag :capture_log
 
   test "agents" do
@@ -12,8 +10,7 @@ defmodule AgentsTest do
     ^state = Agent.get(pid, fn state -> state end)
 
     :ok =
-      1..10
-      |> Enum.each(fn value ->
+      Enum.each(1..10, fn value ->
         Agent.update(pid, fn state -> [value | state] end)
       end)
 
@@ -26,6 +23,7 @@ defmodule AgentsTest do
   end
 
   defmodule CoolStack do
+    @moduledoc false
     use Agent
 
     def start(state \\ []) do
@@ -57,13 +55,11 @@ defmodule AgentsTest do
 
   test "stack" do
     {:ok, pid} = CoolStack.start()
-    ^pid = CoolStack |> Process.whereis()
+    ^pid = Process.whereis(CoolStack)
 
     :waiting = Process.info(pid)[:status]
 
-    :ok =
-      1..10
-      |> Enum.each(&CoolStack.push(&1))
+    :ok = Enum.each(1..10, &CoolStack.push(&1))
 
     [10, 9, 8, 7, 6, 5, 4, 3, 2, 1] =
       :sys.get_state(CoolStack)

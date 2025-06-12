@@ -1,8 +1,6 @@
 defmodule ErlangPersistentTermTest do
   use ExUnit.Case
 
-  alias ErlangPersistentTerm
-
   @moduletag :capture_log
 
   test "persistent term" do

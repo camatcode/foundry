@@ -1,8 +1,6 @@
 defmodule TasksTest do
   use ExUnit.Case
 
-  alias Tasks
-
   @moduletag :capture_log
 
   test "tasks" do

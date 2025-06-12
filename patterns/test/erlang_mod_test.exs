@@ -1,8 +1,6 @@
 defmodule ErlangModTest do
   use ExUnit.Case
 
-  alias ErlangMod
-
   @moduletag :capture_log
 
   test "binary_to_term, term_to_binary" do
@@ -19,7 +17,8 @@ defmodule ErlangModTest do
   end
 
   test "md5" do
-    File.read!("test/erlang_mod_test.exs")
+    "test/erlang_mod_test.exs"
+    |> File.read!()
     |> :erlang.md5()
     |> IO.inspect(label: :md5)
   end
@@ -37,14 +36,14 @@ defmodule ErlangModTest do
 
   test "memory" do
     # bytes
-    :erlang.memory() |> IO.inspect(label: :memory)
+    IO.inspect(:erlang.memory(), label: :memory)
   end
 
   test "system_info" do
-    :erlang.system_info(:system_version) |> IO.inspect(label: :sys_ver)
-    :erlang.system_info(:atom_limit) |> IO.inspect(label: :atom_limit)
-    :erlang.system_info(:ets_count) |> IO.inspect(label: :ets_count)
-    :erlang.system_info(:schedulers) |> IO.inspect(label: :schedulers)
-    :erlang.system_info(:emu_flavor) |> IO.inspect(label: :emu_flavor)
+    :system_version |> :erlang.system_info() |> IO.inspect(label: :sys_ver)
+    :atom_limit |> :erlang.system_info() |> IO.inspect(label: :atom_limit)
+    :ets_count |> :erlang.system_info() |> IO.inspect(label: :ets_count)
+    :schedulers |> :erlang.system_info() |> IO.inspect(label: :schedulers)
+    :emu_flavor |> :erlang.system_info() |> IO.inspect(label: :emu_flavor)
   end
 end

@@ -1,8 +1,6 @@
 defmodule ErlangAtomicsCounterTest do
   use ExUnit.Case
 
-  alias ErlangAtomicsCounter
-
   @moduletag :capture_log
 
   test "atomics" do
@@ -15,7 +13,8 @@ defmodule ErlangAtomicsCounterTest do
     1..100_000
     |> Task.async_stream(
       fn _ ->
-        Enum.random([:existing_user, :new_user])
+        [:existing_user, :new_user]
+        |> Enum.random()
         |> case do
           :existing_user -> :atomics.add(my_atomic, existing_user_index, 1)
           :new_user -> :atomics.add(my_atomic, new_user_index, 1)
@@ -25,9 +24,9 @@ defmodule ErlangAtomicsCounterTest do
     )
     |> Stream.run()
 
-    :atomics.get(my_atomic, existing_user_index) |> IO.inspect(label: :existing)
+    my_atomic |> :atomics.get(existing_user_index) |> IO.inspect(label: :existing)
 
-    :atomics.get(my_atomic, new_user_index) |> IO.inspect(label: :new)
+    my_atomic |> :atomics.get(new_user_index) |> IO.inspect(label: :new)
   end
 
   test "counters" do
@@ -40,7 +39,8 @@ defmodule ErlangAtomicsCounterTest do
     1..100_000
     |> Task.async_stream(
       fn _ ->
-        Enum.random([:existing_user, :new_user])
+        [:existing_user, :new_user]
+        |> Enum.random()
         |> case do
           :existing_user -> :counters.add(my_counter, existing_user_index, 1)
           :new_user -> :counters.add(my_counter, new_user_index, 1)
@@ -50,8 +50,8 @@ defmodule ErlangAtomicsCounterTest do
     )
     |> Stream.run()
 
-    :counters.get(my_counter, existing_user_index) |> IO.inspect(label: :existing)
+    my_counter |> :counters.get(existing_user_index) |> IO.inspect(label: :existing)
 
-    :counters.get(my_counter, new_user_index) |> IO.inspect(label: :new)
+    my_counter |> :counters.get(new_user_index) |> IO.inspect(label: :new)
   end
 end

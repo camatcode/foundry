@@ -1,27 +1,29 @@
 defmodule CryptoTest do
   use ExUnit.Case
 
-  alias Crypto
-
   @moduletag :capture_log
 
   test "hashing" do
     "B060EC95F0BEF0F967671AB6A47196685CC241BF3CD329A8DB3A09E253C7CCA9" =
-      :crypto.hash(:blake2s, "This is some data")
+      :blake2s
+      |> :crypto.hash("This is some data")
       |> Base.encode16()
 
     "170959DFB421768A00EFDC6C70580C5B473E54691A6E5EF32711D4D102CE8AE8" =
-      :crypto.hash(:blake2s, "This is some other data")
+      :blake2s
+      |> :crypto.hash("This is some other data")
       |> Base.encode16()
 
     "07F6BFDB1BC57D898DD8A9022BF01BB581529323071E21337628C3EF6AB29BD1" =
-      :crypto.hash(:sha256, "This is some other data")
+      :sha256
+      |> :crypto.hash("This is some other data")
       |> Base.encode16()
   end
 
   test "hmac" do
     payload =
-      :erlang.term_to_binary(%{some: "Data", i: "Need"})
+      %{some: "Data", i: "Need"}
+      |> :erlang.term_to_binary()
       |> Base.encode64()
 
     secret_key = "this_is_a_secret_and_secure_key"

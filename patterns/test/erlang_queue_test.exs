@@ -1,8 +1,6 @@
 defmodule ErlangQueueTest do
   use ExUnit.Case
 
-  alias ErlangQueue
-
   @moduletag :capture_log
 
   # doctest ErlangQueue
